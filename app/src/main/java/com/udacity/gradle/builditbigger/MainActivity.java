@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +14,13 @@ import com.jokedisplayer.DisplayActivity;
 
 public class MainActivity extends AppCompatActivity implements EndpointsAsyncTask.EndpointCallback{
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
     }
 
 
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements EndpointsAsyncTas
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
+        new EndpointsAsyncTask(this).execute(context);
     }
 
 

@@ -9,14 +9,13 @@ package com.rigel.jokeprovider;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-
-import javax.inject.Named;
+import com.jokelib.Joker;
 
 /**
  * An endpoint class we are exposing
  */
 @Api(
-        name = "myApi",
+        name = "jokeApi",
         version = "v1",
         namespace = @ApiNamespace(
                 ownerDomain = "jokeprovider.rigel.com",
@@ -24,15 +23,15 @@ import javax.inject.Named;
                 packagePath = ""
         )
 )
-public class MyEndpoint {
+public class JokeEndpoint {
 
     /**
      * A simple endpoint method that takes a name and says Hi back
      */
-    @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("name") String name) {
-        MyBean response = new MyBean();
-        response.setData("Hi, " + name);
+    @ApiMethod(name = "getJoke")
+    public Joke getJoke() {
+        Joke response = new Joke();
+        response.setData(new Joker().getJoke());
 
         return response;
     }
