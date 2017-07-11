@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.jokedisplayer.DisplayActivity;
 
@@ -15,12 +17,17 @@ import com.jokedisplayer.DisplayActivity;
 public class MainActivity extends AppCompatActivity implements EndpointsAsyncTask.EndpointCallback{
 
     Context context;
+    Button btnTellJoke;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+
+        btnTellJoke = (Button) findViewById(R.id.btnTellJoke);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
 
@@ -47,14 +54,19 @@ public class MainActivity extends AppCompatActivity implements EndpointsAsyncTas
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(this).execute(context);
+        btnTellJoke.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+
+        new EndpointsAsyncTask(this).execute();
     }
 
 
     @Override
     public void callback(String joke) {
-        Intent i = new Intent(this, DisplayActivity.class);
+        btnTellJoke.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
 
+        Intent i = new Intent(this, DisplayActivity.class);
         i.putExtra(DisplayActivity.JOKE_EXTRA, joke);
         startActivity(i);
     }

@@ -1,6 +1,5 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -15,32 +14,32 @@ import java.io.IOException;
  * Created by rigel on 7/9/17.
  */
 
-public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+public class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
+    private static final String SERVER_IP = "192.168.1.125";
     private static JokeApi jokeAPiService = null;
-    private Context context;
     private EndpointCallback callback;
+
 
     public EndpointsAsyncTask(EndpointCallback callback){
         this.callback = callback;
     }
 
     @Override
-    protected String doInBackground(Context... contexts) {
+    protected String doInBackground(Void... voids) {
         if(jokeAPiService == null) {  // Only do this once
             JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
-                    .setRootUrl("http://192.168.1.125:8080/_ah/api/")
+                    .setRootUrl("http://"+SERVER_IP+":8080/_ah/api/")
                     .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                         @Override
                         public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
                             abstractGoogleClientRequest.setDisableGZipContent(true);
                         }
                     });
-            // end options for devappserver
 
             jokeAPiService = builder.build();
         }
-        this.context = contexts[0];
+
 
         try {
             return jokeAPiService.getJoke().execute().getData();
@@ -53,7 +52,8 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        callback.callback(result);
+        if(callback!=null)
+            callback.callback(result);
     }
 
     public interface EndpointCallback{
