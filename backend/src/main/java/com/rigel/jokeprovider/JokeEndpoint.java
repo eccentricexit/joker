@@ -25,9 +25,6 @@ import com.jokelib.Joker;
 )
 public class JokeEndpoint {
 
-    /**
-     * A simple endpoint method that takes a name and says Hi back
-     */
     @ApiMethod(name = "getJoke")
     public Joke getJoke() {
         Joke response = new Joke();
