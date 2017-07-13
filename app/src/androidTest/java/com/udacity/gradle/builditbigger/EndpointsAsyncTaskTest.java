@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -16,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 public class EndpointsAsyncTaskTest implements EndpointsAsyncTask.EndpointCallback{
 
     EndpointsAsyncTask asyncTask;
+    CountDownLatch signal;
+    String asyncTaskOutput;
 
     @Before
     public void setup(){
@@ -23,13 +28,19 @@ public class EndpointsAsyncTaskTest implements EndpointsAsyncTask.EndpointCallba
     }
 
     @Test
-    public void testGetJokeFromEndpoint(){
+    public void testGetJokeFromEndpoint() throws InterruptedException {
+        signal = new CountDownLatch(1);
         asyncTask.execute();
+
+        signal.await(5, TimeUnit.SECONDS);
+
+        assertNotNull(asyncTaskOutput);
+        assertFalse(asyncTaskOutput.isEmpty());
     }
 
     @Override
     public void callback(String result) {
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
+        asyncTaskOutput = result;
+        signal.countDown();
     }
 }
